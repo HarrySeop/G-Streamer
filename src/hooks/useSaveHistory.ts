@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { writeHistoryFile, HistoryFile } from '../lib/googleDrive';
+import { writeHistoryFile, type HistoryFile } from '../lib/googleDrive';
 
 export const useSaveHistory = () => {
   const queryClient = useQueryClient();

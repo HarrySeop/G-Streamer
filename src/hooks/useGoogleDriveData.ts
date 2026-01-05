@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { listVideoFiles, readHistoryFile, DriveFile, HistoryFile } from '../lib/googleDrive';
+import { listVideoFiles, readHistoryFile, type DriveFile, type HistoryFile } from '../lib/googleDrive';
 
 export const useGoogleDriveData = () => {
   return useQuery({

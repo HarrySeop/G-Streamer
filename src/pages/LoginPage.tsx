@@ -22,7 +22,7 @@ const LoginPage = () => {
   }, []);
 
   const handleGoogleLogin = () => {
-    gapi.auth2.getAuthInstance().signIn().then((googleUser) => {
+    gapi.auth2.getAuthInstance().signIn().then((googleUser: gapi.auth2.GoogleUser) => {
       const profile = googleUser.getBasicProfile();
       signIn({
         name: profile.getName(),
@@ -30,7 +30,7 @@ const LoginPage = () => {
         imageUrl: profile.getImageUrl(),
       });
       navigate('/');
-    }).catch((error) => {
+    }).catch((error: any) => {
       console.error('Google Sign-In failed:', error);
     });
   };

@@ -5,7 +5,7 @@
     "useDefineForClassFields": true,
     "lib": ["ES2022", "DOM", "DOM.Iterable"],
     "module": "ESNext",
-    "types": ["vite/client"],
+    "types": ["vite/client", "gapi", "gapi.auth2", "gapi.client.drive-v3", "node"],
     "skipLibCheck": true,
 
     /* Bundler mode */
