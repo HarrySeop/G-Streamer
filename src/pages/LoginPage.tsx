@@ -6,6 +6,11 @@ import { useNavigate } from 'react-router-dom';
 // TODO: Replace with your actual Google Client ID
 const GOOGLE_CLIENT_ID = 'YOUR_GOOGLE_CLIENT_ID.apps.googleusercontent.com';
 
+interface GoogleAuthError {
+  error: string;
+  details?: string;
+}
+
 const LoginPage = () => {
   const { signIn } = useAuth();
   const navigate = useNavigate();
@@ -30,7 +35,7 @@ const LoginPage = () => {
         imageUrl: profile.getImageUrl(),
       });
       navigate('/');
-    }).catch((error: any) => {
+    }).catch((error: GoogleAuthError) => {
       console.error('Google Sign-In failed:', error);
     });
   };

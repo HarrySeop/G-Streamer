@@ -27,19 +27,38 @@ const VideoPlayer = ({ fileId, onTimeUpdate, initialTime = 0 }: VideoPlayerProps
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
   const [isControlsVisible, setIsControlsVisible] = useState(true);
-  let controlsTimeout: NodeJS.Timeout;
+  const controlsTimeout = useRef<NodeJS.Timeout | null>(null);
 
   const videoSrc = `https://www.googleapis.com/drive/v3/files/${fileId}?alt=media`;
   const accessToken = gapi.auth.getToken().access_token;
 
   useEffect(() => {
-    if (videoRef.current) {
-      videoRef.current.currentTime = initialTime;
-      if(initialTime > 0) {
-        videoRef.current.play();
-        setIsPlaying(true);
+    return () => {
+      if (controlsTimeout.current) {
+        clearTimeout(controlsTimeout.current);
       }
+    };
+  }, []);
+
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video) return;
+
+    const setPlaying = () => setIsPlaying(true);
+    const setPaused = () => setIsPlaying(false);
+
+    video.addEventListener('play', setPlaying);
+    video.addEventListener('pause', setPaused);
+
+    video.currentTime = initialTime;
+    if (initialTime > 0) {
+      video.play();
     }
+
+    return () => {
+      video.removeEventListener('play', setPlaying);
+      video.removeEventListener('pause', setPaused);
+    };
   }, [initialTime]);
   
   const handlePlayPause = () => {
@@ -49,7 +68,6 @@ const VideoPlayer = ({ fileId, onTimeUpdate, initialTime = 0 }: VideoPlayerProps
       } else {
         videoRef.current.play();
       }
-      setIsPlaying(!isPlaying);
     }
   };
 
@@ -100,8 +118,10 @@ const VideoPlayer = ({ fileId, onTimeUpdate, initialTime = 0 }: VideoPlayerProps
   return (
     <div className="relative w-full aspect-video bg-black" onMouseMove={() => {
         setIsControlsVisible(true);
-        clearTimeout(controlsTimeout);
-        controlsTimeout = setTimeout(() => setIsControlsVisible(false), 3000);
+        if (controlsTimeout.current) {
+          clearTimeout(controlsTimeout.current);
+        }
+        controlsTimeout.current = setTimeout(() => setIsControlsVisible(false), 3000);
     }}>
       <video
         ref={videoRef}

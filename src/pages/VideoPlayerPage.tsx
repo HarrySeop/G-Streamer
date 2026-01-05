@@ -10,10 +10,13 @@ const VideoPlayerPage = () => {
   const { mutate: saveHistory } = useSaveHistory();
 
   const historyDataRef = useRef(driveData?.history);
-  const lastSaveTimeRef = useRef(Date.now());
+  const lastSaveTimeRef = useRef<number | null>(null);
   const playbackInfoRef = useRef({ time: 0, duration: 0 });
 
   useEffect(() => {
+    if (lastSaveTimeRef.current === null) {
+      lastSaveTimeRef.current = Date.now();
+    }
     historyDataRef.current = driveData?.history;
   }, [driveData?.history]);
 
@@ -42,7 +45,7 @@ const VideoPlayerPage = () => {
   const handleTimeUpdate = useCallback((time: number, duration: number) => {
     playbackInfoRef.current = { time, duration };
     // Save every 15 seconds
-    if (Date.now() - lastSaveTimeRef.current > 15000) {
+    if (lastSaveTimeRef.current && Date.now() - lastSaveTimeRef.current > 15000) {
       saveCurrentHistory();
     }
   }, [saveCurrentHistory]);
